@@ -9,6 +9,7 @@ var {Gmaps, Marker} = ReactGMaps
 // Movie data
 var movieData = require('./movies.json')
 var theatres = require('./theatres.json')
+var TheatreMap = require('./TheatresMap')
 
 // There should really be some JSON-formatted data in movies.json, instead of an empty array.
 // I started writing this command to extract the data from the learn-sql workspace
@@ -164,11 +165,26 @@ var App = React.createClass({
       movies: movieData.sort(this.movieCompareByReleased)
     })
   },
+
   viewChanged: function(view) {
     // View is either "latest" (movies sorted by release), "alpha" (movies
     // sorted A-Z), or "map" (the data visualized)
     // We should probably do the sorting and setting of movies in state here.
     // You should really look at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    if(view === 'latest'){
+          return (
+            this.setState({
+              currentView: movieData.sort(this.movieCompareByReleased)
+            })
+          )
+        }
+        if(view === 'alpha'){
+          return(
+            this.setState({
+              currentView: movieData.sort(this.movieCompareByTitle)
+            })
+          )
+        }
     this.setState({
       currentView: view
     })
@@ -183,12 +199,8 @@ var App = React.createClass({
   },
   renderMainSection: function() {
     if (this.state.currentView === 'map') {
-      return (
-        <div className="col-sm-12">
-          <h3>This would be an awfully good place to put a map.</h3>
-        </div>
-      )
-    } else {
+      return <TheatreMap />
+      } else {
       return (
         <div>
           <MovieList movies={this.state.movies} movieClicked={this.movieClicked} />
